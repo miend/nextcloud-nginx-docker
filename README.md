@@ -307,7 +307,7 @@ This contains configurations for our docker-compose setup and environment variab
 
 ## Post-Setup Configuration/Fixes
 
-16. You should be able to navigate around your Nextcloud site, create users, and see content, but when I used this setup myself, there were a couple issues I encountered. Occasionally, a link within nextcloud would cause the user to redirect to a path at `localhost:8080` when clicked (instead of `my.domain.com`). Additionally, links sent to users in emails (like the "Forgot my Password" emails) would do the same thing. Whoops. To prevent these issues, we can run a couple commands.
+16. You should be able to navigate around your Nextcloud site, create users, and see content, but when I used this setup myself, there were a couple issues I encountered. Occasionally, a link within nextcloud would cause the user to redirect to a path at `localhost:8080` when clicked (instead of `my.domain.com`). Additionally, links sent to users in emails (like the "Forgot my Password" emails) would do the same thing, and the process of authorizing client apps for a user would fail due to an http protocol issue. Whoops. To prevent these issues, we can run a couple commands.
 
     First, use the command `docker ps` to see the status of all running containers. It should generate output like this:
 
@@ -325,9 +325,10 @@ This contains configurations for our docker-compose setup and environment variab
     ```shell
     $ docker exec --user www-data username_app_1 php occ config:system:set trusted_domains 0 --value my.domain.com
     $ docker exec --user www-data username_app_1 php occ config:system:set overwrite.cli.url --value https://my.domain.com
+    $ docker exec --user www-data michael_app_1 php occ config:system:set overwriteprotocol --value https
     ```
 
-    The above will execute two commands provided by `occ` inside the docker container that set some configuration variables for Nextcloud, and should solve the aforementioned issue.
+    The above will execute three commands provided by `occ` inside the docker container that set some configuration variables for Nextcloud, and should solve the aforementioned issues.
 
 ## Configuring Email
 
